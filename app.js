@@ -14,7 +14,28 @@ mongoose.connect(connStr, options, function(err) {
   if (err) throw err;
 });
 
+const app = express();
 const port = process.env.PORT || 3000;
+const bookRouter = express.Router();
+const books = require('./models/bookModel');
+
+// Books route
+bookRouter.route('/books')
+  .get((req, res) => {
+    const query = {};
+    if (req.query.genre) {
+      query.genre = req.query.genre
+    }
+    books.find(query, (err, books) => {
+      if(err) {
+        return res.send(err);
+      }
+      return res.json(books); 
+    });
+  });
+
+
+app.use('/api', bookRouter);
 
 app.get('/', (req, res) => {
   res.send('Welcome to my Nodemon API!');
