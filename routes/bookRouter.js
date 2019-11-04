@@ -24,6 +24,20 @@ function routes(Book){
     });
   });
 
+  // Middleware
+  bookRouter.use('/books/:bookId', (req, res, next) => {
+    Book.findById(req.params.bookId, (err, book) => {
+      if(err) {
+        return res.send(err);
+      }
+      if (book) {
+        req.book = book
+        return next();
+      }
+      return res.sendStatus(404);
+    });
+  });
+
   // Route with book identifier
   bookRouter.route('/books/:bookId')
   .get((req, res) => {
