@@ -1,5 +1,5 @@
 const express = require('express');
-const booksController = require('../controller/booksController.js')
+const booksController = require('../controller/booksController.js');
 
 function routes(Book) {
   const bookRouter = express.Router();
@@ -8,7 +8,7 @@ function routes(Book) {
   // Books route
   bookRouter.route('/books')
     .post(controller.post)
-    .get(controller.get)
+    .get(controller.get);
 
   // Middleware
   bookRouter.use('/books/:bookId', (req, res, next) => {
@@ -17,7 +17,7 @@ function routes(Book) {
         return res.send(err);
       }
       if (book) {
-        req.book = book
+        req.book = book;
         return next();
       }
       return res.sendStatus(404);
@@ -29,7 +29,7 @@ function routes(Book) {
     .get((req, res) => {
       const returnBook = req.book.toJSON();
       returnBook.links = {};
-      const genre = req.book.genre.replace(' ', '%20')
+      const genre = req.book.genre.replace(' ', '%20');
       returnBook.links.FilterByThisGenre = `http://${req.headers.host}/api/books/?genre=${genre}`;
       res.json(returnBook);
     })
@@ -52,8 +52,9 @@ function routes(Book) {
         delete req.body._id;
       }
       Object.entries(req.body).forEach((item) => {
-        book[item[0]] = item[1];
-      })
+        const [, value] = item;
+        book[[item]] = value;
+      });
       req.book.save((err) => {
         if (err) {
           return res.send(err);
